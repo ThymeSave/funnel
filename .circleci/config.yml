@@ -52,6 +52,11 @@ jobs:
       - run:
           name: Build binary
           command: make build
+      - persist_to_workspace:
+          name: Persist distribution folder
+          root: .
+          paths:
+            - dist/
   build-image:
     <<: *go_executor
     steps:
