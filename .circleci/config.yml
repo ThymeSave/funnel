@@ -1,0 +1,91 @@
+version: '2.1'
+
+.go_executor: &go_executor
+  executor:
+    name: go/default
+    tag: '1.16'
+
+orbs:
+  github-release: timo-reymann/github-release@1.1.0
+  go: circleci/go@1.7.0
+  pack: buildpacks/pack@0.2.4
+
+
+commands:
+  go_install_dependencies:
+    steps:
+      - go/load-cache
+      - go/mod-download
+      - go/save-cache
+  set_version_env_var:
+    steps:
+      - run:
+          name: Evaluate and set version env variable
+          command: |
+            if [[ -z "${CIRCLE_TAG}" ]]
+            then
+              export VERSION=snapshot
+              export IS_SNAPSHOT_VERSION=1
+            else
+             export VERSION="${CIRCLE_TAG}"
+             export IS_SNAPSHOT_VERSION=0
+            fi
+
+            echo "export VERSION='${VERSION}'" >> $BASH_ENV
+            echo "export IS_SNAPSHOT_VERSION='${IS_SNAPSHOT_VERSION}'" >> $BASH_ENV
+
+jobs:
+  test:
+    <<: *go_executor
+    steps:
+      - checkout
+      - go_install_dependencies
+      - run:
+          name: Run tests
+          command: make test
+  build:
+    <<: *go_executor
+    steps:
+      - checkout
+      - go_install_dependencies
+      - set_version_env_var
+      - run:
+          name: Build binary
+          command: make build
+  build-image:
+    <<: *go_executor
+    steps:
+      - checkout
+      - pack/install-pack
+      - set_version_env_var
+      - run:
+          name: Build image
+          command: make build-image
+      - run:
+          name: Publish image with docker cli
+          command: make push-image
+
+workflows:
+  continious:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
+      - build-image:
+          requires:
+            - test
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - github-release/create-release-with-files:
+          file_pattern: 'dist/*'
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/

@@ -1,0 +1,39 @@
+fail_fast: true
+repos:
+  - repo: git://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: detect-private-key
+      - id: check-symlinks
+      - id: check-vcs-permalinks
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+      - id: check-case-conflict
+      - id: check-toml
+      - id: check-xml
+      - id: fix-byte-order-marker
+      - id: destroyed-symlinks
+
+  - repo: git://github.com/dnephin/pre-commit-golang
+    rev: v0.4.0
+    hooks:
+      - id: go-fmt
+      - id: go-vet
+      - id: go-lint
+      - id: go-imports
+      - id: validate-toml
+      - id: no-go-testing
+      - id: go-build
+      - id: go-mod-tidy
+
+  - repo: https://github.com/syntaqx/git-hooks
+    rev: v0.0.16
+    hooks:
+      - id: circleci-config-validate
+      - id: shellcheck
+        additional_dependencies: []
