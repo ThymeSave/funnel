@@ -63,6 +63,10 @@ jobs:
           name: Build image
           command: make build-image
       - run:
+          name: Login to GitHub packages
+          command: |
+            echo ${GITHUB_PACKAGES_TOKEN} | docker login --password-stdin -u ${GITHUB_PACKAGES_USER}
+      - run:
           name: Publish image with docker cli
           command: make push-image
 
@@ -81,6 +85,8 @@ workflows:
             branches:
               only:
                 - main
+          context:
+            - github-packages
       - github-release/create-release-with-files:
           file_pattern: 'dist/*'
           requires:
