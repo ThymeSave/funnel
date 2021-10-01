@@ -16,7 +16,8 @@ build: ## Build the application
 build-image: ## Build OCI image
 	pack build ghcr.io/thymesave/funnel:$(VERSION) \
 		--buildpack gcr.io/paketo-buildpacks/go \
-		--builder paketobuildpacks/builder:tiny
+		--builder paketobuildpacks/builder:tiny \
+		--env "BP_OCI_SOURCE=https://github.com/thymesave/funnel"
 
 push-image: ## Push OCR image using docker cli
 	docker push ghcr.io/thymesave/funnel:$(VERSION)
