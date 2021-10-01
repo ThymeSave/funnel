@@ -65,7 +65,7 @@ jobs:
       - run:
           name: Login to GitHub packages
           command: |
-            echo ${GITHUB_PACKAGES_TOKEN} | docker login --password-stdin -u ${GITHUB_PACKAGES_USER}
+            echo ${GITHUB_PACKAGES_TOKEN} | docker login --password-stdin -u ${GITHUB_PACKAGES_USER} ghcr.io
       - run:
           name: Publish image with docker cli
           command: make push-image
