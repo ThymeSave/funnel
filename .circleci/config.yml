@@ -58,6 +58,7 @@ jobs:
       - checkout
       - pack/install-pack
       - set_version_env_var
+      - setup_remote_docker
       - run:
           name: Build image
           command: make build-image
