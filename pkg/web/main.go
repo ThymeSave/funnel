@@ -4,13 +4,16 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/thymesave/funnel/pkg/config"
+
 	"github.com/gorilla/handlers"
 )
 import "github.com/gorilla/mux"
 
 func addMiddlewares(r *mux.Router) http.Handler {
+	webConfig := config.Get().Web
 	loggingHandler := handlers.LoggingHandler(os.Stdout, r)
-	corsHandler := handlers.CORS(handlers.AllowedOrigins([]string{"*"}), handlers.AllowCredentials(), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}))(loggingHandler)
+	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.AllowCredentials(), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}))(loggingHandler)
 	return corsHandler
 }
 
