@@ -3,13 +3,10 @@ package web
 import (
 	"net/http"
 	"testing"
-
-	"github.com/thymesave/funnel/pkg/config"
 )
 
 // TestNotFoundHandler runs against the real router and verifies not found is working
 func TestNotFoundHandler(t *testing.T) {
-	config.CreateDefault()
 	rr := testHandler(CreateRouter(), "GET", "/404", nil)
 	if rr.Code != http.StatusNotFound {
 		t.Errorf("Expected status 404, but got %d", rr.Code)

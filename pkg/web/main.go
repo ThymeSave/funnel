@@ -23,6 +23,7 @@ func createHandler(r *mux.Router, handlerFunc http.HandlerFunc) http.Handler {
 
 func registerAppRoutes(r *mux.Router) {
 	r.Path("/").Methods("GET").HandlerFunc(IndexHandler)
+	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(CouchDbProxyHandler)
 }
 
 // CreateRouter returns a ready to use router

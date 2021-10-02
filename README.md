@@ -4,6 +4,7 @@ funnel
 [![pre-commit](https://img.shields.io/badge/%E2%9A%93%20%20pre--commit-enabled-success)](https://pre-commit.com/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thymesave/funnel)](https://goreportcard.com/report/github.com/thymesave/funnel)
 [![CircleCI](https://circleci.com/gh/ThymeSave/funnel/tree/main.svg?style=shield)](https://circleci.com/gh/ThymeSave/funnel/tree/main)
+[![codecov](https://codecov.io/gh/thymesave/funnel/branch/main/graph/badge.svg?token=J9DAZXRUDZ)](https://codecov.io/gh/thymesave/funnel)
 [![GitHub Release](https://img.shields.io/github/v/tag/thymesave/funnel.svg?label=version)](https://github.com/thymesave/funnel/releases)
 
 > ⚠️ This project is currently under active development
