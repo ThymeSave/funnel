@@ -30,8 +30,8 @@ func registerAppRoutes(r *mux.Router) {
 func CreateRouter() http.Handler {
 	r := mux.NewRouter()
 	registerAppRoutes(r)
+	registerMetricHandler(r)
 	r.NotFoundHandler = createHandler(r, NotFoundHandler)
 	r.MethodNotAllowedHandler = createHandler(r, MethodNotAllowedHandler)
-	registerMetricHandler(r)
 	return addMiddlewares(r)
 }
