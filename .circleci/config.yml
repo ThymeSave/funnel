@@ -10,6 +10,10 @@ orbs:
   go: circleci/go@1.7.0
   pack: buildpacks/pack@0.2.4
 
+executors:
+  node:
+    docker:
+      - image: cimg/node:lts
 
 commands:
   go_install_dependencies:
@@ -48,6 +52,22 @@ jobs:
           command: |
             go test -race -coverprofile=coverage.txt -covermode=atomic  -v ./...
             bash <(curl -s https://codecov.io/bash)
+  build_gh_pages:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Build html documentation
+          command: |
+            mkdir gh-pages
+            npx redoc-cli@0.12.3 bundle -o gh-pages/index.html docs/openapi.yml
+      - run:
+          name: Publish github pages
+          command: |
+            git config user.email "thymesave-bot@thymesave.github.io"
+            git config user.name "thymesave-bot"
+            npx gh-pages@2.0.1 --dist gh-pages/ --message "docs: Update github pages [skip ci]"
+
   build:
     <<: *go_executor
     steps:
@@ -97,6 +117,14 @@ workflows:
                 - main
           context:
             - github-packages
+      - build_gh_pages:
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - build
+            - test
       - github-release/create-release-with-files:
           file_pattern: 'dist/*'
           requires:
