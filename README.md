@@ -22,6 +22,15 @@ creating oci compliant images, that can be executed with docker/podman.
 - [GNU make](https://www.gnu.org/software/make/)
 - [Go 1.16+](https://golang.org/)
 - [pack](https://github.com/buildpacks/pack) (required only when building the docker image)
+- [pre-commit](https://pre-commit.com/)
+
+### Setup
+
+To set up the project locally:
+
+1. Activate pre-commit hooks: `pre-commit install && pre-commit install --hook-type commit-msg`
+1. Install go dependencies: `go mod tidy`
+1. Verify your setup with running tests: `make test`
 
 ### Goals
 
@@ -34,15 +43,15 @@ This repository follows [Conventional Commits](https://www.conventionalcommits.o
 ### Format
 
 `<type>(optional scope): <description>`
-Example: `feat(pre-event): add speakers section`
+Example: `feat(pre-event): Add speakers section`
 
 ### 1. Type
 
 Available types are:
 
-- feat → Changes about addition or removal of a feature. Ex: `feat: add table on landing page`
-  , `feat: remove table from landing page`
-- fix → Bug fixing, followed by the bug. Ex: `fix: illustration overflows in mobile view`
+- feat → Changes about addition or removal of a feature. Ex: `feat: Add table on landing page`
+  , `feat: Remove table from landing page`
+- fix → Bug fixing, followed by the bug. Ex: `fix: Illustration overflows in mobile view`
 - docs → Update documentation (README.md)
 - style → Updating style, and not changing any logic in the code (reorder imports, fix whitespace, remove comments)
 - chore → Installing new dependencies, or bumping deps
@@ -51,11 +60,11 @@ Available types are:
 - test → Update testing suite, cypress files
 - revert → when reverting commits
 - perf → Fixing something regarding performance (deriving state, using memo, callback)
-- vercel → Blank commit to trigger vercel deployment. Ex: `vercel: trigger deployment`
+- vercel → Blank commit to trigger vercel deployment. Ex: `vercel: Trigger deployment`
 
 ### 2. Optional Scope
 
-Labels per page Ex: `feat(pre-event): add date label`
+Labels per page Ex: `feat(pre-event): Add date label`
 
 *If there is no scope needed, you don't need to write it*
 
@@ -67,8 +76,8 @@ Add BREAKING CHANGE in the description if there is a significant change.
 
 **If there are multiple changes, then commit one by one**
 
-- After colon, there are a single space Ex: `feat: add something`
-- When using `fix` type, state the issue Ex: `fix: file size limiter not working`
+- After colon, there are a single space Ex: `feat: Add something`
+- When using `fix` type, state the issue Ex: `fix: File size limiter not working`
 - Use imperative, dan present tense: "change" not "changed" or "changes"
-- Don't use capitals in front of the sentence
+- Use capitals in front of the sentence
 - Don't add full stop (.) at the end of the sentence

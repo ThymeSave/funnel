@@ -31,9 +31,15 @@ repos:
       - id: go-build
       - id: go-mod-tidy
 
-  - repo: https://github.com/syntaqx/git-hooks
+  - repo: git://github.com/syntaqx/git-hooks
     rev: v0.0.16
     hooks:
       - id: circleci-config-validate
       - id: shellcheck
         additional_dependencies: []
+
+  - repo: git://github.com/matthorgan/pre-commit-conventional-commits
+    rev: 20fb963
+    hooks:
+      - id: conventional-commit-check
+        stages: [commit-msg]
