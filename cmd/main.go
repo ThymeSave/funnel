@@ -12,10 +12,16 @@ import (
 )
 
 // RunHTTPServer starts the http server
-func RunHTTPServer(port int) error {
+func RunHTTPServer(ctx context.Context, port int) error {
 	listen := "0.0.0.0:" + strconv.Itoa(port)
-	log.Println("Starting server on  " + listen)
-	return http.ListenAndServe(listen, web.CreateRouter())
+	log.Println("Starting funnel on  " + listen)
+
+	router, err := web.CreateRouter(ctx)
+	if err != nil {
+		return err
+	}
+
+	return http.ListenAndServe(listen, router)
 }
 
 func terminate(status int) {
@@ -33,7 +39,7 @@ func Start() {
 
 	web.CreateCouchDBReverseProxy()
 
-	if err := RunHTTPServer(config.Get().Web.Port); err != nil {
+	if err := RunHTTPServer(appCtx, config.Get().Web.Port); err != nil {
 		log.Printf("HTTP-Server crashed: %s", err)
 		terminate(1)
 	}

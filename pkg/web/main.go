@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"net/http"
 	"os"
 
@@ -21,17 +22,27 @@ func createHandler(r *mux.Router, handlerFunc http.HandlerFunc) http.Handler {
 	return r.NewRoute().HandlerFunc(handlerFunc).GetHandler()
 }
 
-func registerAppRoutes(r *mux.Router) {
+func registerAppRoutes(ctx context.Context, r *mux.Router) error {
+	oauth2Middleware, err := CreateOAuth2Handler(ctx)
+	if err != nil {
+		return err
+	}
+
 	r.Path("/").Methods("GET").HandlerFunc(IndexHandler)
-	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(CouchDbProxyHandler)
+
+	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
+	return nil
 }
 
 // CreateRouter returns a ready to use router
-func CreateRouter() http.Handler {
+func CreateRouter(ctx context.Context) (http.Handler, error) {
 	r := mux.NewRouter()
-	registerAppRoutes(r)
+	err := registerAppRoutes(ctx, r)
+	if err != nil {
+		return nil, err
+	}
 	registerMetricHandler(r)
 	r.NotFoundHandler = createHandler(r, NotFoundHandler)
 	r.MethodNotAllowedHandler = createHandler(r, MethodNotAllowedHandler)
-	return addMiddlewares(r)
+	return addMiddlewares(r), nil
 }

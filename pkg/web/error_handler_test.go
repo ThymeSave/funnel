@@ -7,7 +7,7 @@ import (
 
 // TestNotFoundHandler runs against the real router and verifies not found is working
 func TestNotFoundHandler(t *testing.T) {
-	rr := testHandler(CreateRouter(), "GET", "/404", nil)
+	rr := testHandler(createRouter(), "GET", "/404", nil)
 	if rr.Code != http.StatusNotFound {
 		t.Errorf("Expected status 404, but got %d", rr.Code)
 	}

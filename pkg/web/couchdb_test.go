@@ -38,7 +38,7 @@ func TestCouchDbProxyHandler(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		rr := testHandler(CreateRouter(), "GET", PathCouchDbService+tc.path, nil)
+		rr := testHandler(http.HandlerFunc(CouchDbProxyHandler), "GET", PathCouchDbService+tc.path, nil)
 		if rr.Code != tc.expectedStatus {
 			t.Fatalf("Expected status code %d, but got %d for path %s", tc.expectedStatus, rr.Code, tc.path)
 		}

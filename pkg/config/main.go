@@ -12,6 +12,19 @@ type AppConfig struct {
 	Web *HTTP
 	// CouchDB related configuration
 	CouchDB *CouchDB
+	// Oauth2 related configuration
+	Oauth2 *OAuth2
+}
+
+// OAuth2 represents the configuration related to oauth authentication
+type OAuth2 struct {
+	// IssuerURL is the base url where to find the endpoint `/.well-known/openid-configuration` with
+	// configuration for oidc
+	IssuerURL string `env:"FUNNEL_OAUTH2_ISSUER_URL,required"`
+	// ClientID for jwt tokens to validate
+	ClientID string `env:"FUNNEL_OAUTH2_CLIENT_ID,required"`
+	// VerifyIssuer in jwt claims
+	VerifyIssuer bool `env:"FUNNEL_OAUTH2_VERIFY_ISSUER,default=true"`
 }
 
 // HTTP related configuration
@@ -52,4 +65,5 @@ func Get() *AppConfig {
 // CreateDefault config and ignore errors, intended to be used by tests
 func CreateDefault() {
 	_ = ReadConfig(context.Background())
+	Get().Oauth2.VerifyIssuer = false
 }
