@@ -12,6 +12,24 @@ funnel
 Funnel is a core part of ThymeSave and does what the name suggests: It filters all backend requests. It includes
 routing, cors and authentication.
 
+## Configuration
+
+Configuration is done entirely via environment variables.
+
+| Variable                    | Default   | Description
+| :-------------------------- | :-------: | :----------
+| FUNNEL_OAUTH2_ISSUER_URL    | N/A       | Base url of the identity provider, will be used to search for endpoint `/.well-known/openid-configuration`
+| FUNNEL_OAUTH2_CLIENT_ID     | N/A       | ClientId to check for
+| FUNNEL_OAUTH2_VERIFY_ISSUER | true      | Should the issuer of jwts should be verified (true) or not (false)
+| FUNNEL_PORT                 | 3000      | Port funnel will be listening on
+| FUNNEL_CORS_ORIGINS         | *         | Origins to allow in `Access-Control-Allow-Origins` header, this is typically the url of the webapp.
+| FUNNEL_COUCHDB_SCHEME       | http      | Scheme to use for couchdb communication in most cases http or https.
+| FUNNEL_COUCHDB_HOST         | 127.0.0.1 | IP or hostname where the couchdb is running
+| FUNNEL_COUCHDB_ADMIN_USER   | admin     | User to use for administrative actions with proxy authentication
+
+> More information about setting up OAuth2 etc. will be added later in a different location
+> and linked here.
+
 ## Development
 
 This project is written in go, uses make as a simple build tool and [pack](https://github.com/buildpacks/pack) for
