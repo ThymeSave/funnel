@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"testing"
 
 	"github.com/thymesave/funnel/pkg/config"
 )
@@ -47,4 +48,18 @@ func init() {
 
 	// Init couchdb proxy
 	CreateCouchDBReverseProxy()
+}
+
+func TestCreateRouter(t *testing.T) {
+	_ = patchOidConfig("oidc-config")
+	_, err := CreateRouter(context.Background())
+	if err != nil {
+		t.Fatalf("Expected router creation to be successful, but got %s", err.Error())
+	}
+
+	_ = patchOidConfig("invalid-oidc-config")
+	_, err = CreateRouter(context.Background())
+	if err == nil {
+		t.Fatal("Expected router creation to be fail with invalid oidc config")
+	}
 }
