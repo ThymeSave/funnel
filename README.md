@@ -16,16 +16,18 @@ routing, cors and authentication.
 
 Configuration is done entirely via environment variables.
 
-| Variable                    | Default   | Description
-| :-------------------------- | :-------: | :----------
-| FUNNEL_OAUTH2_ISSUER_URL    | N/A       | Base url of the identity provider, will be used to search for endpoint `/.well-known/openid-configuration`
-| FUNNEL_OAUTH2_CLIENT_ID     | N/A       | ClientId to check for
-| FUNNEL_OAUTH2_VERIFY_ISSUER | true      | Should the issuer of jwts should be verified (true) or not (false)
-| FUNNEL_PORT                 | 3000      | Port funnel will be listening on
-| FUNNEL_CORS_ORIGINS         | *         | Origins to allow in `Access-Control-Allow-Origins` header, this is typically the url of the webapp.
-| FUNNEL_COUCHDB_SCHEME       | http      | Scheme to use for couchdb communication in most cases http or https.
-| FUNNEL_COUCHDB_HOST         | 127.0.0.1 | IP or hostname where the couchdb is running
-| FUNNEL_COUCHDB_ADMIN_USER   | admin     | User to use for administrative actions with proxy authentication
+| Variable                      | Default               | Description
+| :---------------------------- | :-------------------: | :----------
+| FUNNEL_OAUTH2_ISSUER_URL      | N/A                   | Base url of the identity provider, will be used to search for endpoint `/.well-known/openid-configuration`
+| FUNNEL_OAUTH2_CLIENT_ID       | N/A                   | ClientId to check for
+| FUNNEL_OAUTH2_VERIFY_ISSUER   | true                  | Should the issuer of JWTs should be verified (true) or not (false)
+| FUNNEL_OAUTH2_USERNAME_CLAIM  | email                 | Claim in JWTs that will be used to uniquely identify the user
+| FUNNEL_OAUTH2_SCOPES          | openid,profile,email  | Scopes to request when authorizing the user in the webapp
+| FUNNEL_PORT                   | 3000                  | Port funnel will be listening on
+| FUNNEL_CORS_ORIGINS           | *                     | Origins to allow in `Access-Control-Allow-Origins` header, this is typically the url of the webapp.
+| FUNNEL_COUCHDB_SCHEME         | http                  | Scheme to use for couchdb communication in most cases http or https.
+| FUNNEL_COUCHDB_HOST           | 127.0.0.1             | IP or hostname where the couchdb is running
+| FUNNEL_COUCHDB_ADMIN_USER     | admin                 | User to use for administrative actions with proxy authentication
 
 > More information about setting up OAuth2 etc. will be added later in a different location
 > and linked here.

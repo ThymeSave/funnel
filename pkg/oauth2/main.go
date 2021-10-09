@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -19,6 +20,9 @@ const RequestTimeoutSeconds = 3
 
 // TokenContextKey is the context key where the raw oidc token is stored
 const TokenContextKey = contextKey("oauth2Token")
+
+// ErrNoTokenInContext is returned when the request context has no token available
+var ErrNoTokenInContext = errors.New("no token in request context found")
 
 func createHTTPTransport() *http.Transport {
 	t := http.DefaultTransport.(*http.Transport).Clone()
@@ -55,14 +59,4 @@ func NewVerifier(ctx context.Context, oauth2Config *config.OAuth2) (*oidc.IDToke
 	}
 
 	return provider.Verifier(&cfg), nil
-}
-
-// AddTokenToRequestContext adds the given token as context field
-func AddTokenToRequestContext(r *http.Request, token *oidc.IDToken) context.Context {
-	return context.WithValue(r.Context(), TokenContextKey, token)
-}
-
-// GetTokenFromRequest return ths given token from context
-func GetTokenFromRequest(r *http.Request) *oidc.IDToken {
-	return r.Context().Value(TokenContextKey).(*oidc.IDToken)
 }

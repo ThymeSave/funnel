@@ -2,7 +2,6 @@ package oauth2
 
 import (
 	"context"
-	"net/http"
 	"os"
 	"testing"
 
@@ -37,25 +36,6 @@ func TestNewProvider(t *testing.T) {
 	_, err := createProvider("valid-oauth2", "https://auth.provider")
 	if err != nil {
 		t.Fatal(err)
-	}
-}
-
-func TestAddTokenToRequestContext(t *testing.T) {
-	r := (&http.Request{}).WithContext(context.TODO())
-	ctx := AddTokenToRequestContext(r, &oidc.IDToken{Subject: "test"})
-	if ctx == nil {
-		t.Fatal("Expected context to be not nil after modfication")
-	}
-}
-
-func TestGetTokenFromRequest(t *testing.T) {
-	r := (&http.Request{}).WithContext(context.TODO())
-	ctx := AddTokenToRequestContext(r, &oidc.IDToken{Subject: "test"})
-	r = r.WithContext(ctx)
-
-	token := GetTokenFromRequest(r)
-	if token == nil {
-		t.Fatal("Expected token to be present in context after setting")
 	}
 }
 

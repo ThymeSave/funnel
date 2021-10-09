@@ -25,6 +25,10 @@ type OAuth2 struct {
 	ClientID string `env:"FUNNEL_OAUTH2_CLIENT_ID,required"`
 	// VerifyIssuer in jwt claims
 	VerifyIssuer bool `env:"FUNNEL_OAUTH2_VERIFY_ISSUER,default=true"`
+	// UsernameClaim is the name of the claim that will be used to uniquely identify the user
+	UsernameClaim string `env:"FUNNEL_OAUTH2_USERNAME_CLAIM,default=email"`
+	// Scopes to include into new JWTs
+	Scopes []string `env:"FUNNEL_OAUTH2_SCOPES,default=openid,profile,email"`
 }
 
 // HTTP related configuration

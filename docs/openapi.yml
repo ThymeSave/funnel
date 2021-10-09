@@ -9,7 +9,7 @@ info:
 paths:
   /:
     get:
-      description: Display basic information about the funnel api
+      description: Funnel information and configuration for the webapp
       responses:
         200:
           description: API is reachable
@@ -144,9 +144,10 @@ paths:
 components:
   schemas:
     ApiInfo:
-      description: Basic information about funnel
+      description: Information about funnel and webapp configuration
       properties:
-        info:
+        funnel:
+          description: Information about funnel instance
           type: object
           properties:
             version:
@@ -158,3 +159,24 @@ components:
             buildTime:
               type: string
               description: Timestamp of build
+        oidc:
+          description: OIDC related configuration
+          type: object
+          properties:
+            clientId:
+              type: string
+              description: OAuth2 Client ID
+            configUrl:
+              type: string
+              description: OIDC configuration path
+            issuerUrl:
+              type: string
+              description: Issuer URL for OIDC
+            scopes:
+              type: array
+              description: Scopes to request for JWT
+              items:
+                type: string
+            usernameClaim:
+              type: string
+              description: JWT claim to use as username to display
