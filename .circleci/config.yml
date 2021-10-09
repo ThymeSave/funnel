@@ -61,12 +61,13 @@ jobs:
           command: |
             mkdir gh-pages
             npx redoc-cli@0.12.3 bundle -o gh-pages/index.html docs/openapi.yml
+            echo "funnel.docs.thymesave.app" > gh-pages/CNAME
       - run:
           name: Publish github pages
           command: |
             git config user.email "thymesave-bot@thymesave.github.io"
             git config user.name "thymesave-bot"
-            npx gh-pages@2.0.1 --dist gh-pages/ --message "docs: Update github pages [skip ci]"
+            npx gh-pages@2.0.1 --dist gh-pages/ --message "docs: Update github pages [ci skip]"
 
   build:
     <<: *go_executor
