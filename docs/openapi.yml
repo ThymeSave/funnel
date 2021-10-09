@@ -9,7 +9,7 @@ info:
 paths:
   /:
     get:
-      description: Funnel information and configuration for the webapp
+      description: Funnel information and OIDC config
       responses:
         200:
           description: API is reachable
@@ -140,11 +140,28 @@ paths:
             text/plain; version=0.0.4; charset=utf-8:
               schema:
                 description: "Prometheus metric format"
+  /self-service/db:
+    put:
+      description: Initialize database for user
+      responses:
+        200:
+          description: Database is already initialized and has not been updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfServiceDB'
+        201:
+          description: Database has been initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfServiceDB'
+
 
 components:
   schemas:
     ApiInfo:
-      description: Information about funnel and webapp configuration
+      description: API info and webapp config
       properties:
         funnel:
           description: Information about funnel instance
@@ -180,3 +197,9 @@ components:
             usernameClaim:
               type: string
               description: JWT claim to use as username to display
+    SelfServiceDB:
+      description: Response for self service database intialization
+      properties:
+        dbName:
+          type: string
+          description: Name of the database to use

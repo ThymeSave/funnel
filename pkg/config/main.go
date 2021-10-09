@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sethvargo/go-envconfig"
 )
@@ -49,6 +50,11 @@ type CouchDB struct {
 	Port int `env:"FUNNEL_COUCHDB_PORT,default=5984"`
 	// AdminUser is the username of the administrator to use for user creation and operative tasks, it must already exist
 	AdminUser string `evn:"FUNNEL_COUCHDB_ADMIN_USER,default=admin"`
+}
+
+// Endpoint constructs the HTTP endpoint from the couchdb config
+func (c *CouchDB) Endpoint() string {
+	return fmt.Sprintf("%s://%s:%d", c.Scheme, c.Host, c.Port)
 }
 
 var config AppConfig

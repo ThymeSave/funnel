@@ -1,6 +1,7 @@
 package web
 
 import (
+	"github.com/thymesave/funnel/pkg/config"
 	"net/http"
 	"net/http/httputil"
 	"strings"
@@ -27,8 +28,8 @@ const CouchDBProxyHiddenPathStatus = http.StatusTeapot
 
 // CreateCouchDBReverseProxy must be called after configuration has been loaded and before executing
 //requests against the couchdb services endpoint(s)
-func CreateCouchDBReverseProxy() {
-	couchdbReverseProxy = couchdb.CreateReverseProxy(PathCouchDbService)
+func CreateCouchDBReverseProxy(cfg *config.AppConfig) {
+	couchdbReverseProxy = couchdb.CreateReverseProxy(cfg, PathCouchDbService)
 }
 
 // CouchDbProxyHandler is the proxy for couchdb

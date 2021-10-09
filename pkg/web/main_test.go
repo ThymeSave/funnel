@@ -47,7 +47,7 @@ func init() {
 	config.CreateDefault()
 
 	// Init couchdb proxy
-	CreateCouchDBReverseProxy()
+	CreateCouchDBReverseProxy(config.Get())
 }
 
 func TestCreateRouter(t *testing.T) {

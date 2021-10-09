@@ -9,7 +9,7 @@ import (
 // SendJSON response for the given response writer, if an error occurs
 // and 500 is returned to the client and the error is given back if further
 //error handling is required. The cause for the error is also logged.
-func SendJSON(w http.ResponseWriter, payload interface{}) error {
+func SendJSON(w http.ResponseWriter, status int, payload interface{}) error {
 	serialized, err := json.Marshal(payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -18,6 +18,7 @@ func SendJSON(w http.ResponseWriter, payload interface{}) error {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 	_, _ = w.Write(serialized)
 	return nil
 }

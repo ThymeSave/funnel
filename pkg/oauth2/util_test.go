@@ -6,13 +6,12 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/thymesave/funnel/pkg/config"
 )
 
 func TestAddTokenToRequestContext(t *testing.T) {
 	r := (&http.Request{}).WithContext(context.Background())
-	ctx := AddTokenToRequestContext(r, &oidc.IDToken{Subject: "test"})
+	ctx := AddTokenToRequestContext(r, NewIDToken("https://auth.provider", "test"))
 	if ctx == nil {
 		t.Fatal("Expected context to be not nil after modfication")
 	}
@@ -20,7 +19,7 @@ func TestAddTokenToRequestContext(t *testing.T) {
 
 func TestGetTokenFromRequest(t *testing.T) {
 	r := (&http.Request{}).WithContext(context.Background())
-	ctx := AddTokenToRequestContext(r, &oidc.IDToken{Subject: "test"})
+	ctx := AddTokenToRequestContext(r, NewIDToken("https://auth.provider", "test"))
 	r = r.WithContext(ctx)
 
 	token := GetTokenFromRequest(r)
@@ -31,27 +30,27 @@ func TestGetTokenFromRequest(t *testing.T) {
 
 func TestExtractClaims(t *testing.T) {
 	testCases := []struct {
-		rawClaims      map[string]string
+		rawClaims      map[string]interface{}
 		names          []string
-		expectedClaims map[string]string
+		expectedClaims map[string]interface{}
 		errorExpected  bool
 	}{
 		{
-			rawClaims:      map[string]string{"username": "test"},
+			rawClaims:      map[string]interface{}{"username": "test"},
 			names:          []string{"username"},
-			expectedClaims: map[string]string{"username": "test"},
+			expectedClaims: map[string]interface{}{"username": "test"},
 			errorExpected:  false,
 		},
 		{
-			rawClaims:      map[string]string{"username": "test"},
+			rawClaims:      map[string]interface{}{"username": "test"},
 			names:          []string{"username", "nonExistent"},
-			expectedClaims: map[string]string{},
+			expectedClaims: map[string]interface{}{},
 			errorExpected:  true,
 		},
 		{
-			rawClaims:      map[string]string{"username": "test", "some": "val"},
+			rawClaims:      map[string]interface{}{"username": "test", "some": "val"},
 			names:          []string{"username"},
-			expectedClaims: map[string]string{"username": "test"},
+			expectedClaims: map[string]interface{}{"username": "test"},
 			errorExpected:  false,
 		},
 	}
@@ -72,6 +71,7 @@ func TestExtractClaims(t *testing.T) {
 
 func TestGetUsername(t *testing.T) {
 	oauth2Config := config.Get().Oauth2
+	oauth2Config.UsernameClaim = "email"
 
 	r := (&http.Request{}).WithContext(context.Background())
 
@@ -81,7 +81,7 @@ func TestGetUsername(t *testing.T) {
 	}
 
 	// Try with token without claims
-	ctx := AddTokenToRequestContext(r, &oidc.IDToken{Subject: "test"})
+	ctx := AddTokenToRequestContext(r, NewIDToken("https://auth.provider", "test"))
 	r = r.WithContext(ctx)
 
 	username, err := GetUsername(r, oauth2Config)
@@ -90,5 +90,18 @@ func TestGetUsername(t *testing.T) {
 	}
 	if username != "" {
 		t.Fatal("Expected username to be blank")
+	}
+
+	// Try with valid token
+	idToken := NewIDToken("https://auth.provider", "test")
+	idToken.Claims = map[string]interface{}{"email": "test"}
+	ctx = AddTokenToRequestContext(r, idToken)
+	r = r.WithContext(ctx)
+	username, err = GetUsername(r, oauth2Config)
+	if err != nil {
+		t.Fatalf("Expected error to be nil when username is present in claims, but got %s", err)
+	}
+	if username != "test" {
+		t.Fatalf("Expected username to be test, but got %s", username)
 	}
 }

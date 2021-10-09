@@ -24,7 +24,7 @@ func TestSendJSON(t *testing.T) {
 
 	for _, tc := range testCases {
 		dummyHandler := func(w http.ResponseWriter, r *http.Request) {
-			_ = SendJSON(w, tc.input)
+			_ = SendJSON(w, http.StatusOK, tc.input)
 		}
 		req, _ := http.NewRequest("GET", "/any-resource", nil)
 		rr := httptest.NewRecorder()

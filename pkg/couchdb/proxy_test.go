@@ -1,6 +1,7 @@
 package couchdb
 
 import (
+	"github.com/thymesave/funnel/pkg/oauth2"
 	"net/http"
 	"strconv"
 	"testing"
@@ -9,15 +10,22 @@ import (
 )
 
 func TestCreateModifyRequest(t *testing.T) {
-	modifier := CreateModifyRequest("/couchdb")
+	cfg := config.Get()
+	cfg.Oauth2.UsernameClaim = "email"
+	couchConfig := cfg.CouchDB
+
+	modifier := CreateModifyRequest(cfg, "/couchdb")
 	req, _ := http.NewRequest("GET", "/couchdb/test", nil)
 	req.Header.Set("Cookie", "whatever")
-	req.Header.Set("Authoriatzion", "Bearer jwt-goes-here")
+	req.Header.Set("Authorization", "Bearer jwt-goes-here")
 	modifier(req)
-	couchConfig := config.Get().CouchDB
 
 	if req.URL.Path != "/test" {
 		t.Fatal("Prefix does not get removed")
+	}
+
+	if req.Header.Get("X-Auth-CouchDB-UserName") != "" {
+		t.Fatal("X-Auth header should not be present when there is no JWT token sent")
 	}
 
 	if req.URL.Host != couchConfig.Host+":"+strconv.Itoa(couchConfig.Port) {
@@ -34,6 +42,18 @@ func TestCreateModifyRequest(t *testing.T) {
 
 	if req.Header.Get("Content-Type") == "" {
 		t.Fatal("Content-Type should be set")
+	}
+
+	// Set auth header
+	idToken := oauth2.NewIDToken("https://auth.provider", "test")
+
+	idToken.Claims = map[string]interface{}{
+		"email": "test",
+	}
+	req = req.WithContext(oauth2.AddTokenToRequestContext(req, idToken))
+	modifier(req)
+	if req.Header.Get("X-Auth-CouchDB-UserName") == "" {
+		t.Fatal("X-Auth header should be present when there is a JWT token sent")
 	}
 }
 
@@ -60,7 +80,7 @@ func TestModifyResponse(t *testing.T) {
 }
 
 func TestCreateReverseProxy(t *testing.T) {
-	proxy := CreateReverseProxy("/couchdb")
+	proxy := CreateReverseProxy(config.Get(), "/couchdb")
 	if proxy == nil {
 		t.Fatal("CreateReverseProxy should NEVER be nil")
 	}

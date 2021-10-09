@@ -15,8 +15,7 @@ type AuthErrorResponse struct {
 }
 
 func oauthError(w http.ResponseWriter, status int, response AuthErrorResponse) {
-	w.WriteHeader(status)
-	_ = SendJSON(w, AuthErrorResponse{Message: "Authorization header is missing"})
+	_ = SendJSON(w, status, response)
 }
 
 // CreateOAuth2Handler in given context, creates an oauth2 verifier, and returns a middleware
@@ -49,7 +48,7 @@ func CreateOAuth2Handler(ctx context.Context) (func(next http.HandlerFunc) http.
 				return
 			}
 
-			next(w, r.WithContext(oauth2.AddTokenToRequestContext(r, idToken)))
+			next(w, r.WithContext(oauth2.AddTokenToRequestContext(r, oauth2.Convert(idToken))))
 		}
 	}, nil
 }

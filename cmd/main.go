@@ -37,7 +37,7 @@ func Start() {
 		terminate(2)
 	}
 
-	web.CreateCouchDBReverseProxy()
+	web.CreateCouchDBReverseProxy(config.Get())
 
 	if err := RunHTTPServer(appCtx, config.Get().Web.Port); err != nil {
 		log.Printf("HTTP-Server crashed: %s", err)

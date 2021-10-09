@@ -1,6 +1,7 @@
 package couchdb
 
 import (
+	"github.com/thymesave/funnel/pkg/oauth2"
 	"net/http"
 	"net/http/httputil"
 	"strconv"
@@ -10,22 +11,26 @@ import (
 )
 
 // GetCouchDBUser from the request
-func GetCouchDBUser(r *http.Request) string {
-	// TODO Set based on JWT
-	return "admin"
+func GetCouchDBUser(r *http.Request, oauth2Config *config.OAuth2) (string, error) {
+	return oauth2.GetUsername(r, oauth2Config)
 }
 
 // CreateModifyRequest returns a function capable of modifying requests to make requests to couchdb without copying
 // all headers
-func CreateModifyRequest(basePath string) func(r *http.Request) {
-	couchdbConfig := config.Get().CouchDB
+func CreateModifyRequest(cfg *config.AppConfig, basePath string) func(r *http.Request) {
+	couchdbConfig := cfg.CouchDB
+	oauth2Config := cfg.Oauth2
 	host := couchdbConfig.Host + ":" + strconv.Itoa(couchdbConfig.Port)
 	scheme := couchdbConfig.Scheme
 
 	return func(r *http.Request) {
 		header := http.Header{}
-		header.Set("X-Auth-CouchDB-UserName", GetCouchDBUser(r))
-		header.Set("X-Auth-CouchDB-Roles", "")
+
+		username, err := GetCouchDBUser(r, oauth2Config)
+		if err == nil {
+			setAuthHeader(&header, username, []string{})
+		}
+
 		header.Set("Content-Type", "application/json")
 		header.Set("Accept", "application/json")
 
@@ -46,9 +51,9 @@ func ModifyResponse(r *http.Response) error {
 }
 
 // CreateReverseProxy for CouchDB
-func CreateReverseProxy(basePath string) *httputil.ReverseProxy {
+func CreateReverseProxy(cfg *config.AppConfig, basePath string) *httputil.ReverseProxy {
 	return &httputil.ReverseProxy{
-		Director:       CreateModifyRequest(basePath),
+		Director:       CreateModifyRequest(cfg, basePath),
 		ModifyResponse: ModifyResponse,
 	}
 }

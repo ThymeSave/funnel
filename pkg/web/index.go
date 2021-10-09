@@ -14,7 +14,7 @@ import (
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	oauth2Config := config.Get().Oauth2
 
-	_ = SendJSON(w, map[string]interface{}{
+	_ = SendJSON(w, http.StatusOK, map[string]interface{}{
 		"funnel": map[string]string{
 			"version":   buildinfo.Version,
 			"gitSha":    buildinfo.GitSha,
