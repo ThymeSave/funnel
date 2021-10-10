@@ -4,9 +4,6 @@ import (
 	"github.com/thymesave/funnel/pkg/config"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
-	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -46,14 +43,9 @@ func TestCreateUserDB(t *testing.T) {
 
 	for _, tc := range testCases {
 		mockResponse(tc.httpStatus, tc.responseBody, func(srv *httptest.Server, c Client) {
-			testServerURL, _ := url.Parse(srv.URL)
-			port, _ := strconv.Atoi(testServerURL.Port())
-			res, err := CreateUser(&c, &config.CouchDB{
-				Scheme:    testServerURL.Scheme,
-				Host:      strings.Split(testServerURL.Host, ":")[0],
-				Port:      port,
-				AdminUser: "admin",
-			}, "test")
+			cfg := config.CouchDB{}
+			cfg.ParseEndpoint(srv.URL)
+			res, err := CreateUser(&c, &cfg, "test")
 			if err != nil {
 				if tc.errMsg == "" {
 					t.Fatal(err)

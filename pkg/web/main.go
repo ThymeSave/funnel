@@ -29,9 +29,11 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 		return err
 	}
 
-	r.Path("/self-service/db").Methods("PUT").HandlerFunc(oauth2Middleware(SelfServiceSeedHandler))
-	r.Path("/").Methods("GET").HandlerFunc(IndexHandler)
-	r.Path("/metrics").Handler(promhttp.Handler())
+	r.Path("/").Methods(http.MethodGet).HandlerFunc(IndexHandler)
+	r.Path("/health").Methods(http.MethodGet).HandlerFunc(HealthHandler)
+	r.Path("/health/{component}").Methods(http.MethodGet).HandlerFunc(HealthHandler)
+	r.Path("/metrics").Methods(http.MethodGet).Handler(promhttp.Handler())
+	r.Path("/self-service/db").Methods(http.MethodPut).HandlerFunc(oauth2Middleware(SelfServiceSeedHandler))
 	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
 
 	return nil

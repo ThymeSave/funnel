@@ -4,7 +4,7 @@ info:
   version: 0.0.1
   contact:
     name: ThymeSave
-    url: https://github.com/thymesave
+    url: https://thymesave.app
 
 paths:
   /:
@@ -27,6 +27,10 @@ paths:
           format: path
     get:
       description: CouchDB Proxy
+      security:
+        - oauth2: { }
+      tags:
+        - CouchDB
       responses:
         200:
           description: request completed successfully
@@ -52,6 +56,10 @@ paths:
           description: upstream is unreachable
     post:
       description: CouchDB Proxy
+      security:
+        - oauth2: { }
+      tags:
+        - CouchDB
       responses:
         200:
           description: request completed successfully
@@ -77,6 +85,10 @@ paths:
           description: upstream is unreachable
     put:
       description: CouchDB Proxy
+      security:
+        - oauth2: { }
+      tags:
+        - CouchDB
       responses:
         200:
           description: request completed successfully
@@ -102,6 +114,10 @@ paths:
           description: upstream is unreachable
     delete:
       description: CouchDB Proxy
+      security:
+        - oauth2: { }
+      tags:
+        - CouchDB
       responses:
         200:
           description: request completed successfully
@@ -127,12 +143,16 @@ paths:
           description: upstream is unreachable
     options:
       description: CouchDB Proxy Preflight
+      tags:
+        - CouchDB
       responses:
         200:
           description: satisfy browser requirements
   /metrics:
     get:
       description: Prometheus metrics
+      tags:
+        - Technical
       responses:
         200:
           description: Prometheus text
@@ -143,6 +163,10 @@ paths:
   /self-service/db:
     put:
       description: Initialize database for user
+      security:
+        - oauth2: { }
+      tags:
+        - CouchDB
       responses:
         200:
           description: Database is already initialized and has not been updated
@@ -156,9 +180,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SelfServiceDB'
-
+  /health:
+    get:
+      description: Get health status for entire app
+      tags:
+        - Technical
+      responses:
+        200:
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Health'
+        500:
+          description: API is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+  /health/{component}:
+    get:
+      description: Get health status for component
+      tags:
+        - Technical
+      parameters:
+        - in: path
+          name: component
+      responses:
+        200:
+          description: Component is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Health'
+        500:
+          description: Component is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Health'
 
 components:
+  securitySchemes:
+    oAuth2:
+      type: oauth2
+      description: OAuth2 via OIDC
+      flows:
+        implicit:
+          authorizationUrl: "https://auth.provider/authorize"
+          scopes:
+            openid: OIDC compliant marker
+            profile: Read profile info
+            email: Read email adress
   schemas:
     ApiInfo:
       description: API info and webapp config
@@ -203,3 +276,9 @@ components:
         dbName:
           type: string
           description: Name of the database to use
+    Health:
+      description: Health info
+      properties:
+        status:
+          type: string
+          description: Status text (UP/DOWN)

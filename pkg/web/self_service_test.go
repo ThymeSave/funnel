@@ -5,9 +5,6 @@ import (
 	"github.com/thymesave/funnel/pkg/oauth2"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
-	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -51,14 +48,9 @@ func TestSelfServiceSeedHandler(t *testing.T) {
 		couchMock := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(tc.couchStatus)
 		}))
-		couchURL, _ := url.Parse(couchMock.URL)
-		port, _ := strconv.Atoi(couchURL.Port())
-		config.Get().CouchDB = &config.CouchDB{
-			Scheme:    couchURL.Scheme,
-			Host:      strings.Split(couchURL.Host, ":")[0],
-			Port:      port,
-			AdminUser: "admin",
-		}
+		couchCfg := config.Get().CouchDB
+		couchCfg.AdminUser = "admin"
+		couchCfg.ParseEndpoint(couchMock.URL)
 
 		token := oauth2.NewIDToken("https://auth.provider", "test")
 		token.Claims = tc.claims

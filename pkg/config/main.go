@@ -3,6 +3,9 @@ package config
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strconv"
+	"strings"
 
 	"github.com/sethvargo/go-envconfig"
 )
@@ -55,6 +58,15 @@ type CouchDB struct {
 // Endpoint constructs the HTTP endpoint from the couchdb config
 func (c *CouchDB) Endpoint() string {
 	return fmt.Sprintf("%s://%s:%d", c.Scheme, c.Host, c.Port)
+}
+
+// ParseEndpoint from given endpoint url
+func (c *CouchDB) ParseEndpoint(endpoint string) {
+	parsed, _ := url.Parse(endpoint)
+	port, _ := strconv.Atoi(parsed.Port())
+	c.Scheme = parsed.Scheme
+	c.Host = strings.Split(parsed.Host, ":")[0]
+	c.Port = port
 }
 
 var config AppConfig
