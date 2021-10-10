@@ -1,0 +1,23 @@
+version: '2.1'
+services:
+  couchdb_init:
+    image: curlimages/curl
+    entrypoint: /bin/sh
+    # Create _users collection as its not getting created by default
+    command: >
+      -c 'sleep 5 && curl -XPUT -v -u admin:admin http://couchdb:5984/_users'
+    depends_on:
+      - couchdb
+  couchdb:
+    image: couchdb:3.1
+    ports:
+      - "5984:5984"
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: admin
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+      - ./couchdb_config:/opt/couchdb/etc/local.d/
+
+volumes:
+  couchdb_data: {}

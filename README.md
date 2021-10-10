@@ -60,8 +60,9 @@ Configuration is done entirely via environment variables.
 
 ## Development
 
-This project is written in go, uses [make](https://www.gnu.org/software/make/) as a simple build tool and [pack](https://github.com/buildpacks/pack) for
-creating oci compliant images, that can be executed with docker/podman.
+This project is written in go, uses [make](https://www.gnu.org/software/make/) as a simple build tool
+and [pack](https://github.com/buildpacks/pack) for creating oci compliant images, that can be executed with
+docker/podman.
 
 ### Required tools
 
@@ -69,14 +70,16 @@ creating oci compliant images, that can be executed with docker/podman.
 - [Go 1.16+](https://golang.org/)
 - [pack](https://github.com/buildpacks/pack) (required only when building the docker image)
 - [pre-commit](https://pre-commit.com/)
+- [docker-compose](https://docs.docker.com/compose/) (required when you want to test against a local couchdb instance)
 
 ### Setup
 
 To set up the project locally:
 
 1. Activate pre-commit hooks: `pre-commit install && pre-commit install --hook-type commit-msg`
-1. Install go dependencies: `go mod tidy`
-1. Verify your setup with running tests: `make test`
+2. Install go dependencies: `go mod tidy`
+3. Verify your setup with running tests: `make test`
+4. **[OPTIONAL]**: Setup couchdb locally with docker-compose in [.docker](./.docker)
 
 ### Goals
 
