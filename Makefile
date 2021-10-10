@@ -12,8 +12,10 @@ run: ## Run funnel locally
 	go run main.go $(GO_BUILD_ARGS)
 
 build: ## Build the application
-	@mkdir -p dist/
-	go build -o dist/funnel $(GO_BUILD_ARGS) main.go
+	@rm -rf dist/ || true && mkdir -p dist/
+	@GOOS=linux GOARCH=amd64 go build -o dist/funnel_linux-amd64-$(VERSION) $(GO_BUILD_ARGS)
+	@GOOS=linux GOARCH=arm64 go build -o dist/funnel_linux-arm64-$(VERSION) $(GO_BUILD_ARGS)
+	@GOOS=linux GOARCH=386 go build -o dist/funnel_linux-i386-$(VERSION) $(GO_BUILD_ARGS)
 
 build-image: ## Build OCI image
 	pack build ghcr.io/thymesave/funnel:$(VERSION) \
