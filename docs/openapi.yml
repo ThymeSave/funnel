@@ -6,228 +6,16 @@ info:
     name: ThymeSave
     url: https://thymesave.app
 
-paths:
-  /:
-    get:
-      description: Funnel information and OIDC config
-      responses:
-        200:
-          description: API is reachable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiInfo'
-  /services/couchdb/*:
-    parameters:
-      - name: path
-        in: path
-        description: CouchDB request path
-        schema:
-          type: string
-          format: path
-    get:
-      description: CouchDB Proxy
-      security:
-        - oauth2: { }
-      tags:
-        - CouchDB
-      responses:
-        200:
-          description: request completed successfully
-        201:
-          description: document is created
-        202:
-          description: request is accepted
-        404:
-          description: server is unable to find the requested content
-        405:
-          description: HTTP request type used is invalid
-        409:
-          description: there is any update conflict
-        418:
-          description: path is not routed to couchdb
-        401:
-          description: user is not authorized
-        403:
-          description: user is missing required permissions
-        500:
-          description: the data sent in the request is invalid
-        502:
-          description: upstream is unreachable
-    post:
-      description: CouchDB Proxy
-      security:
-        - oauth2: { }
-      tags:
-        - CouchDB
-      responses:
-        200:
-          description: request completed successfully
-        201:
-          description: document is created
-        202:
-          description: request is accepted
-        404:
-          description: server is unable to find the requested content
-        405:
-          description: HTTP request type used is invalid
-        409:
-          description: there is any update conflict
-        418:
-          description: path is not routed to couchdb
-        401:
-          description: user is not authorized
-        403:
-          description: user is missing required permissions
-        500:
-          description: the data sent in the request is invalid
-        502:
-          description: upstream is unreachable
-    put:
-      description: CouchDB Proxy
-      security:
-        - oauth2: { }
-      tags:
-        - CouchDB
-      responses:
-        200:
-          description: request completed successfully
-        201:
-          description: document is created
-        202:
-          description: request is accepted
-        404:
-          description: server is unable to find the requested content
-        405:
-          description: HTTP request type used is invalid
-        409:
-          description: there is any update conflict
-        418:
-          description: path is not routed to couchdb
-        401:
-          description: user is not authorized
-        403:
-          description: user is missing required permissions
-        500:
-          description: the data sent in the request is invalid
-        502:
-          description: upstream is unreachable
-    delete:
-      description: CouchDB Proxy
-      security:
-        - oauth2: { }
-      tags:
-        - CouchDB
-      responses:
-        200:
-          description: request completed successfully
-        201:
-          description: document is created
-        202:
-          description: request is accepted
-        404:
-          description: server is unable to find the requested content
-        405:
-          description: HTTP request type used is invalid
-        409:
-          description: there is any update conflict
-        418:
-          description: path is not routed to couchdb
-        401:
-          description: user is not authorized
-        403:
-          description: user is missing required permissions
-        500:
-          description: the data sent in the request is invalid
-        502:
-          description: upstream is unreachable
-    options:
-      description: CouchDB Proxy Preflight
-      tags:
-        - CouchDB
-      responses:
-        200:
-          description: satisfy browser requirements
-  /metrics:
-    get:
-      description: Prometheus metrics
-      tags:
-        - Technical
-      responses:
-        200:
-          description: Prometheus text
-          content:
-            text/plain; version=0.0.4; charset=utf-8:
-              schema:
-                description: "Prometheus metric format"
-  /self-service/db:
-    put:
-      description: Initialize database for user
-      security:
-        - oauth2: { }
-      tags:
-        - CouchDB
-      responses:
-        200:
-          description: Database is already initialized and has not been updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelfServiceDB'
-        201:
-          description: Database has been initialized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelfServiceDB'
-  /health:
-    get:
-      description: Get health status for entire app
-      tags:
-        - Technical
-      responses:
-        200:
-          description: API is healthy
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schema/Health'
-        500:
-          description: API is unhealthy
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Health'
-  /health/{component}:
-    get:
-      description: Get health status for component
-      tags:
-        - Technical
-      parameters:
-        - in: path
-          name: component
-      responses:
-        200:
-          description: Component is healthy
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schema/Health'
-        500:
-          description: Component is unhealthy
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schema/Health'
 
 components:
   securitySchemes:
-    oAuth2:
+    oauth2:
       type: oauth2
       description: OAuth2 via OIDC
       flows:
         implicit:
           authorizationUrl: "https://auth.provider/authorize"
+          tokenUrl: "https://auth.provider/token"
           scopes:
             openid: OIDC compliant marker
             profile: Read profile info
@@ -282,3 +70,218 @@ components:
         status:
           type: string
           description: Status text (UP/DOWN)
+
+
+paths:
+  /:
+    get:
+      description: Funnel information and OIDC config
+      responses:
+        200:
+          description: API is reachable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiInfo'
+  /services/couchdb/*:
+    parameters:
+      - name: path
+        in: path
+        description: CouchDB request path
+        schema:
+          type: string
+          format: path
+    get:
+      description: CouchDB Proxy
+      security:
+        - oauth2: []
+      tags:
+        - CouchDB
+      responses:
+        200:
+          description: request completed successfully
+        201:
+          description: document is created
+        202:
+          description: request is accepted
+        404:
+          description: server is unable to find the requested content
+        405:
+          description: HTTP request type used is invalid
+        409:
+          description: there is any update conflict
+        418:
+          description: path is not routed to couchdb
+        401:
+          description: user is not authorized
+        403:
+          description: user is missing required permissions
+        500:
+          description: the data sent in the request is invalid
+        502:
+          description: upstream is unreachable
+    post:
+      description: CouchDB Proxy
+      security:
+        - oauth2: []
+      tags:
+        - CouchDB
+      responses:
+        200:
+          description: request completed successfully
+        201:
+          description: document is created
+        202:
+          description: request is accepted
+        404:
+          description: server is unable to find the requested content
+        405:
+          description: HTTP request type used is invalid
+        409:
+          description: there is any update conflict
+        418:
+          description: path is not routed to couchdb
+        401:
+          description: user is not authorized
+        403:
+          description: user is missing required permissions
+        500:
+          description: the data sent in the request is invalid
+        502:
+          description: upstream is unreachable
+    put:
+      description: CouchDB Proxy
+      security:
+        - oauth2: []
+      tags:
+        - CouchDB
+      responses:
+        200:
+          description: request completed successfully
+        201:
+          description: document is created
+        202:
+          description: request is accepted
+        404:
+          description: server is unable to find the requested content
+        405:
+          description: HTTP request type used is invalid
+        409:
+          description: there is any update conflict
+        418:
+          description: path is not routed to couchdb
+        401:
+          description: user is not authorized
+        403:
+          description: user is missing required permissions
+        500:
+          description: the data sent in the request is invalid
+        502:
+          description: upstream is unreachable
+    delete:
+      description: CouchDB Proxy
+      security:
+        - oauth2: []
+      tags:
+        - CouchDB
+      responses:
+        200:
+          description: request completed successfully
+        201:
+          description: document is created
+        202:
+          description: request is accepted
+        404:
+          description: server is unable to find the requested content
+        405:
+          description: HTTP request type used is invalid
+        409:
+          description: there is any update conflict
+        418:
+          description: path is not routed to couchdb
+        401:
+          description: user is not authorized
+        403:
+          description: user is missing required permissions
+        500:
+          description: the data sent in the request is invalid
+        502:
+          description: upstream is unreachable
+    options:
+      description: CouchDB Proxy Preflight
+      tags:
+        - CouchDB
+      responses:
+        200:
+          description: satisfy browser requirements
+  /metrics:
+    get:
+      description: Prometheus metrics
+      tags:
+        - Technical
+      responses:
+        200:
+          description: Prometheus text
+          content:
+            text/plain; version=0.0.4; charset=utf-8:
+              schema:
+                description: "Prometheus metric format"
+  /self-service/db:
+    put:
+      description: Initialize database for user
+      security:
+        - oauth2: []
+      tags:
+        - CouchDB
+      responses:
+        200:
+          description: Database is already initialized and has not been updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfServiceDB'
+        201:
+          description: Database has been initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfServiceDB'
+  /health:
+    get:
+      description: Get health status for entire app
+      tags:
+        - Technical
+      responses:
+        200:
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        500:
+          description: API is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+  /health/{component}:
+    get:
+      description: Get health status for component
+      tags:
+        - Technical
+      parameters:
+        - in: path
+          name: component
+      responses:
+        200:
+          description: Component is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        500:
+          description: Component is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
