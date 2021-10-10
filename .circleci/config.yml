@@ -104,10 +104,20 @@ jobs:
 workflows:
   continious:
     jobs:
-      - test
+      - test:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
       - build:
           requires:
             - test
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
       - build-image:
           requires:
             - test
@@ -116,6 +126,8 @@ workflows:
             branches:
               only:
                 - main
+            tags:
+              only: /.*/
           context:
             - github-packages
       - build_gh_pages:
@@ -135,3 +147,5 @@ workflows:
               ignore: /.*/
             tags:
               only: /.*/
+          context:
+            - github-release
