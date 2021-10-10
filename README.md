@@ -8,10 +8,35 @@ funnel
 [![pre-commit](https://img.shields.io/badge/%E2%9A%93%20%20pre--commit-enabled-success)](https://pre-commit.com/)
 [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/)
 
-> ⚠️ This project is currently under active development
-
 Funnel is a core part of ThymeSave and does what the name suggests: It filters all backend requests. It includes
 routing, cors and authentication.
+
+## Installation
+
+Funnel is available as binary, via `go get` or docker.
+
+> A detailed guide and templates for setting up infrastructure will follow and be linked here,
+> for now these instructions serve as an absolute basic guide.
+
+### Docker (recommended)
+
+```sh
+docker run --rm ghcr.io/thymesave/funnel -e CONFIG_KEY=value [...]
+```
+
+### Using go
+
+```sh
+go get github.com/thymesave/funnel
+go install github.com/thymesave/funnel
+
+# Execute or setup systemd with cmd
+funnel
+```
+
+### Using binary
+
+Download the desired release from [the releases page](https://github.com/ThymeSave/funnel/releases).
 
 ## Configuration
 
@@ -35,7 +60,7 @@ Configuration is done entirely via environment variables.
 
 ## Development
 
-This project is written in go, uses make as a simple build tool and [pack](https://github.com/buildpacks/pack) for
+This project is written in go, uses [make](https://www.gnu.org/software/make/) as a simple build tool and [pack](https://github.com/buildpacks/pack) for
 creating oci compliant images, that can be executed with docker/podman.
 
 ### Required tools
@@ -102,3 +127,14 @@ Add BREAKING CHANGE in the description if there is a significant change.
 - Use imperative, dan present tense: "change" not "changed" or "changes"
 - Use capitals in front of the sentence
 - Don't add full stop (.) at the end of the sentence
+
+## Contributing
+
+## [Code of Conduct](./CODE-OF-CONDUCT.md)
+
+ThymeSave has adopted a Code of Conduct that we expect project participants to adhere to. Please read the full text so
+that you can understand what actions will and will not be tolerated.
+
+## [Contributing Guide](./CONTRIBUTING.md)
+
+Read our contributing guide to learn about how to propose bugfixes and improvements and contribute to ThymeSave!

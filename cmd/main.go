@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/thymesave/funnel/pkg/buildinfo"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +15,7 @@ import (
 // RunHTTPServer starts the http server
 func RunHTTPServer(ctx context.Context, port int) error {
 	listen := "0.0.0.0:" + strconv.Itoa(port)
-	log.Println("Starting funnel on  " + listen)
+	log.Println("Starting funnel " + buildinfo.Version + " on  " + listen)
 
 	router, err := web.CreateRouter(ctx)
 	if err != nil {
