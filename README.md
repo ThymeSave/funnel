@@ -133,7 +133,7 @@ Add BREAKING CHANGE in the description if there is a significant change.
 
 ## Contributing
 
-### [Code of Conduct](./CODE-OF-CONDUCT.md)
+### [Code of Conduct](https://github.com/ThymeSave/.github/blob/main/CODE-OF-CONDUCT.md)
 
 ThymeSave has adopted a Code of Conduct that we expect project participants to adhere to. Please read the full text so
 that you can understand what actions will and will not be tolerated.
