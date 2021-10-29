@@ -52,4 +52,4 @@ test-coverage-report: test-coverage ## Run test and display coverage report in b
 
 create-checksums: ## Create checksums for binaries
 	@find ./dist -type f -exec sh -c 'sha256sum {} | cut -d " " -f 1 > {}.sha256' {} \;
-	@find ./dist -type f -exec sh -c 'sha1sum {} | cut -d " " -f 1 > {}.sha1' {} \;
+	@find ./dist ! -name '*.sha256' -type f -exec sh -c 'sha1sum {} | cut -d " " -f 1 > {}.sha1' {} \;
