@@ -32,7 +32,7 @@ build-image: ## Build OCI image
 		--env "BP_OCI_VENDOR=ThymeSave" \
 		--env "BP_OCI_TITLE=Funnel" \
 		--env "BP_OCI_REF_NAME=thymesave/funnel" \
-		--env "BP_OCI_DESCRIPTION=Funnel is a core part of ThymeSave and does what the name suggests: It filters all backend requests. It includes routing, cors and authentication." \
+		--env "BP_OCI_DESCRIPTION=Filters and manages all backend requests. It includes routing, cors and authentication." \
 		--env "BP_OCI_LICENSES=GPLv3" \
 		--env "BP_OCI_VERSION=$(VERSION)" \
 		--env "BP_OCI_REVISION=$(GIT_REF)" \
