@@ -8,8 +8,7 @@ funnel
 [![pre-commit](https://img.shields.io/badge/%E2%9A%93%20%20pre--commit-enabled-success)](https://pre-commit.com/)
 [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/)
 
-Funnel is a core part of ThymeSave and does what the name suggests: It filters all backend requests. It includes
-routing, cors and authentication.
+Filters and manages all backend requests. It includes routing, cors and authentication.
 
 ## Installation
 
