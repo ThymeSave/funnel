@@ -1,6 +1,6 @@
 funnel
 ===
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![CircleCI](https://circleci.com/gh/ThymeSave/funnel/tree/main.svg?style=shield)](https://circleci.com/gh/ThymeSave/funnel/tree/main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thymesave/funnel)](https://goreportcard.com/report/github.com/thymesave/funnel)
 [![codecov](https://codecov.io/gh/thymesave/funnel/branch/main/graph/badge.svg?token=J9DAZXRUDZ)](https://codecov.io/gh/thymesave/funnel)
