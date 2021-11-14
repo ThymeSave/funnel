@@ -7,10 +7,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/thymesave/funnel/pkg/config"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/google/uuid"
+	"github.com/thymesave/funnel/pkg/config"
 )
 
 type createUserRequest struct {
@@ -68,6 +69,8 @@ func CreateUser(c *Client, couchDBConfig *config.CouchDB, username string) (*Cre
 	if err != nil {
 		return nil, err
 	}
+
+	defer req.Body.Close()
 
 	if res.StatusCode != http.StatusConflict && res.StatusCode != http.StatusCreated {
 		body, _ := ioutil.ReadAll(res.Body)

@@ -3,8 +3,9 @@ package health
 import (
 	"context"
 	"fmt"
-	"github.com/thymesave/funnel/pkg/config"
 	"net/http"
+
+	"github.com/thymesave/funnel/pkg/config"
 )
 
 // CouchDBCheck verifies couchdb is reachable
@@ -14,6 +15,8 @@ func CouchDBCheck(ctx context.Context) Status {
 	if err != nil {
 		return StatusUnhealthy
 	}
+
+	defer res.Body.Close()
 
 	if res.StatusCode == http.StatusOK {
 		return StatusHealthy
