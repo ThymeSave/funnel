@@ -11,6 +11,20 @@ import (
 	"github.com/thymesave/funnel/pkg/config"
 )
 
+func mockResponseWithContentType(httpStatus int, responseBody string, contentType string, testFunc func(*httptest.Server)) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Content-Type", contentType)
+		w.WriteHeader(httpStatus)
+		_, _ = w.Write([]byte(responseBody))
+	}))
+	testFunc(server)
+	defer server.Close()
+}
+
+func mockResponse(httpStatus int, responseBody string, testFunc func(*httptest.Server)) {
+	mockResponseWithContentType(httpStatus, responseBody, "text/plain", testFunc)
+}
+
 func testHandlerWithRequest(handler http.Handler, req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)

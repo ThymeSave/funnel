@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/thymesave/funnel/pkg/config"
 	"github.com/thymesave/funnel/pkg/web"
@@ -22,7 +23,14 @@ func RunHTTPServer(ctx context.Context, port int) error {
 		return err
 	}
 
-	return http.ListenAndServe(listen, router)
+	server := &http.Server{
+		Addr:         listen,
+		Handler:      router,
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+	}
+	return server.ListenAndServe()
 }
 
 func terminate(status int) {
