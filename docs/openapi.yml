@@ -214,6 +214,29 @@ paths:
       responses:
         200:
           description: satisfy browser requirements
+  /services/cors-proxy/:
+    get:
+      parameters:
+        - name: url
+          in: query
+          description: URL encoded URL to request in format {protocol}://{host}[:{port}]/[{path}]
+      description: |
+        Route request through funnel to bypass CORS problems.
+        It only supports GET requests that can take up to 3 seconds.
+
+        While this endpoint is only usable via authentication it has no rate-limiting for now.
+        This might change in the future.
+      tags:
+        - CORS-Proxy
+      security:
+        - oauth2: [ ]
+      responses:
+        200:
+          description: Content could be loaded from origin location
+          content:
+            text/plain:
+              schema:
+                description: Content in plain text
   /metrics:
     get:
       description: Prometheus metrics
