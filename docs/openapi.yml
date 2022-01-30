@@ -70,6 +70,19 @@ components:
         status:
           type: string
           description: Status text (UP/DOWN)
+    CORSProxyError:
+      description: Error proxying request with cors headers
+      properties:
+        upstreamResponse:
+          type: string
+          description: Response from upstream (if any); can be empty
+        errorStatus:
+          type: string
+          enum:
+            - ORIGIN_REQUEST_FAILED
+            - ORIGIN_RESPONSE_READ_FAILED
+            - ORIGIN_RESPONSE_CONTENT_TYPE_UNSUPPORTED
+            - INVALID_URL
 
 
 paths:
@@ -222,7 +235,11 @@ paths:
           description: URL encoded URL to request in format {protocol}://{host}[:{port}]/[{path}]
       description: |
         Route request through funnel to bypass CORS problems.
-        It only supports GET requests that can take up to 3 seconds.
+        It only supports requests:
+          - with method GET
+          - responding with content type text/html*
+          - that dont take longer than 3 seconds
+          - which hostname does not resolve to a local or loopback ip address
 
         While this endpoint is only usable via authentication it has no rate-limiting for now.
         This might change in the future.
@@ -237,6 +254,12 @@ paths:
             text/plain:
               schema:
                 description: Content in plain text
+        400:
+          description: One or more invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CORSProxyError'
   /metrics:
     get:
       description: Prometheus metrics

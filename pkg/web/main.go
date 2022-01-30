@@ -3,10 +3,9 @@ package web
 import (
 	"context"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/thymesave/funnel/pkg/config"
 	"net/http"
 	"os"
-
-	"github.com/thymesave/funnel/pkg/config"
 
 	"github.com/gorilla/handlers"
 )
@@ -34,7 +33,7 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	r.Path("/health/{component}").Methods(http.MethodGet).HandlerFunc(HealthHandler)
 	r.Path("/metrics").Methods(http.MethodGet).Handler(promhttp.Handler())
 	r.Path("/self-service/db").Methods(http.MethodPut).HandlerFunc(oauth2Middleware(SelfServiceSeedHandler))
-	r.PathPrefix(PathCORSProxy + "/").Methods(http.MethodGet).HandlerFunc(oauth2Middleware(CORSProxyHandler))
+	r.PathPrefix(PathCORSProxy + "/").Methods(http.MethodGet).HandlerFunc(CORSProxyHandler)
 	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
 
 	return nil

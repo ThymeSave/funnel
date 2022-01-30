@@ -3,7 +3,7 @@ version: '2.1'
 .go_executor: &go_executor
   executor:
     name: go/default
-    tag: '1.16'
+    tag: '1.17'
 
 orbs:
   github-release: timo-reymann/github-release@1.1.0

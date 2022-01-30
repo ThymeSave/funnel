@@ -4,8 +4,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/thymesave/funnel/pkg/buildinfo"
+	"github.com/thymesave/funnel/pkg/util"
 	"io"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
 	"time"
 )
@@ -18,6 +21,9 @@ const StatusReadFailed = "ORIGIN_RESPONSE_READ_FAILED"
 
 // StatusInvalidContentType indicates that the response content type is not supported by funnel
 const StatusInvalidContentType = "ORIGIN_RESPONSE_CONTENT_TYPE_UNSUPPORTED"
+
+// StatusInvalidURL indicates that the requested url is not valid and can not be requested
+const StatusInvalidURL = "INVALID_URL"
 
 type proxyError struct {
 	Status           string `json:"errorStatus"`
@@ -34,24 +40,42 @@ var (
 	}
 )
 
+func isForceAllowLocal() bool {
+	return os.Getenv("FUNNEL_CORS_FORCE_LOCAL_RESOLUTION") == "true"
+}
+
+func newProxyError(status string, upstreamResponse string) proxyError {
+	return proxyError{status, ""}
+}
+
 // CORSProxyHandler contains functionality to route GET request to other origins
 func CORSProxyHandler(w http.ResponseWriter, r *http.Request) {
-	url := r.URL.Query().Get("url")
-	if url == "" {
+	corsURL := r.URL.Query().Get("url")
+	if corsURL == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	req, _ := http.NewRequest("GET", url, nil)
+	parsedURL, err := url.Parse(corsURL)
+	if err != nil {
+		_ = SendJSON(w, http.StatusBadRequest, newProxyError(StatusInvalidURL, ""))
+		return
+	}
+
+	if !isForceAllowLocal() && util.ResolvesHostnameToLocalIP(parsedURL.Host) {
+		_ = SendJSON(w, http.StatusBadRequest, newProxyError(StatusInvalidURL, ""))
+	}
+
+	req, _ := http.NewRequest("GET", corsURL, nil)
 	req.Header.Set("User-Agent", "ThymeSave_Funnel/"+buildinfo.Version)
 	res, err := proxyHTTPClient.Do(req)
 	if err != nil {
-		_ = SendJSON(w, http.StatusBadGateway, proxyError{StatusRequestFailed, ""})
+		_ = SendJSON(w, http.StatusBadGateway, newProxyError(StatusRequestFailed, ""))
 		return
 	}
 
 	if !strings.HasPrefix(res.Header.Get("Content-Type"), "text/html") {
-		_ = SendJSON(w, http.StatusBadRequest, proxyError{StatusInvalidContentType, ""})
+		_ = SendJSON(w, http.StatusBadRequest, newProxyError(StatusInvalidContentType, ""))
 		return
 	}
 

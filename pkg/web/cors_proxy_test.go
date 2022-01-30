@@ -3,10 +3,13 @@ package web
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestCORSProxyHandler(t *testing.T) {
+	os.Setenv("FUNNEL_CORS_FORCE_LOCAL_RESOLUTION", "true")
+
 	testCases := []struct {
 		upstreamStatus int
 		expectedStatus int
@@ -63,4 +66,5 @@ func TestCORSProxyHandler(t *testing.T) {
 			}
 		})
 	}
+	os.Setenv("FUNNEL_CORS_FORCE_LOCAL_RESOLUTION", "false")
 }
