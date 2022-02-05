@@ -9,13 +9,18 @@ import (
 	"testing"
 )
 
-func mockResponse(httpStatus int, responseBody string, testFunc func(*httptest.Server)) {
+func mockResponseWithContentType(httpStatus int, responseBody string, contentType string, testFunc func(*httptest.Server)) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(httpStatus)
+		w.Header().Set("Content-Type", contentType)
 		_, _ = w.Write([]byte(responseBody))
 	}))
 	testFunc(server)
 	defer server.Close()
+}
+
+func mockResponse(httpStatus int, responseBody string, testFunc func(*httptest.Server)) {
+	mockResponseWithContentType(httpStatus, responseBody, "text/plain", testFunc)
 }
 
 func TestRegisterCheck(t *testing.T) {
