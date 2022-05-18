@@ -28,6 +28,14 @@ func createHandler(r *mux.Router, handlerFunc http.HandlerFunc) http.Handler {
 	return r.NewRoute().HandlerFunc(handlerFunc).GetHandler()
 }
 
+func createCorsHandler(webConfig *config.HTTP) func(w http.ResponseWriter, request *http.Request) {
+	return func(w http.ResponseWriter, request *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", strings.Join(webConfig.CORSOrigins, ","))
+		w.Header().Set("Access-Control-Allow-Methods", strings.Join(allowedMethods, ","))
+		w.Header().Set("Access-Control-Allow-Headers", strings.Join(allowedHeaders, ","))
+	}
+}
+
 func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	oauth2Middleware, err := CreateOAuth2Handler(ctx)
 	if err != nil {
@@ -35,6 +43,7 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	}
 
 	webConfig := config.Get().Web
+	corsHandler := createCorsHandler(webConfig)
 
 	r.Path("/").Methods(http.MethodGet).HandlerFunc(IndexHandler)
 	r.Path("/health").Methods(http.MethodGet).HandlerFunc(HealthHandler)
@@ -42,12 +51,9 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	r.Path("/metrics").Methods(http.MethodGet).Handler(promhttp.Handler())
 	r.Path("/self-service/db").Methods(http.MethodPut).HandlerFunc(oauth2Middleware(SelfServiceSeedHandler))
 	r.PathPrefix(PathCORSProxy + "/").Methods(http.MethodGet).HandlerFunc(CORSProxyHandler)
+	r.PathPrefix(PathCouchDbService + "/").Methods(http.MethodOptions).HandlerFunc(corsHandler)
 	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
-	r.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", strings.Join(webConfig.CORSOrigins, ","))
-		w.Header().Set("Access-Control-Allow-Methods", strings.Join(allowedMethods, ","))
-		w.Header().Set("Access-Control-Allow-Headers", strings.Join(allowedHeaders, ","))
-	})
+	r.Methods(http.MethodOptions).HandlerFunc(corsHandler)
 
 	return nil
 }

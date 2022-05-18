@@ -96,7 +96,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiInfo'
-  /services/couchdb/*:
+  /service/couchdb/*:
     parameters:
       - name: path
         in: path
@@ -227,7 +227,7 @@ paths:
       responses:
         200:
           description: satisfy browser requirements
-  /services/cors-proxy/:
+  /service/cors-proxy/:
     get:
       parameters:
         - name: url
