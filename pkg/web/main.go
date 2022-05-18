@@ -14,7 +14,7 @@ import "github.com/gorilla/mux"
 
 var (
 	allowedMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-	allowedHeaders = []string{"Accept", "Accept-Language", "Content-Language", "Origin", "Authorization"}
+	allowedHeaders = []string{"Accept", "Accept-Language", "Content-Language", "Content-Type", "Origin", "Authorization", "User-Agent", "Referer"}
 )
 
 func addGlobalMiddlewares(r *mux.Router) http.Handler {
