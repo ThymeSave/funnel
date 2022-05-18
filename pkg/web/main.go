@@ -6,16 +6,14 @@ import (
 	"github.com/thymesave/funnel/pkg/config"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/handlers"
 )
 import "github.com/gorilla/mux"
 
 func addGlobalMiddlewares(r *mux.Router) http.Handler {
-	webConfig := config.Get().Web
-	loggingHandler := handlers.LoggingHandler(os.Stdout, r)
-	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.IgnoreOptions(), handlers.AllowCredentials(), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}))(loggingHandler)
-	return corsHandler
+	return handlers.LoggingHandler(os.Stdout, r)
 }
 
 func createHandler(r *mux.Router, handlerFunc http.HandlerFunc) http.Handler {
@@ -28,6 +26,8 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 		return err
 	}
 
+	webConfig := config.Get().Web
+
 	r.Path("/").Methods(http.MethodGet).HandlerFunc(IndexHandler)
 	r.Path("/health").Methods(http.MethodGet).HandlerFunc(HealthHandler)
 	r.Path("/health/{component}").Methods(http.MethodGet).HandlerFunc(HealthHandler)
@@ -35,8 +35,10 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	r.Path("/self-service/db").Methods(http.MethodPut).HandlerFunc(oauth2Middleware(SelfServiceSeedHandler))
 	r.PathPrefix(PathCORSProxy + "/").Methods(http.MethodGet).HandlerFunc(CORSProxyHandler)
 	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
-	r.Methods(http.MethodOptions).HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		// dummy handler to satisfy preflight requests
+	r.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", strings.Join(webConfig.CORSOrigins, ","))
+		w.Header().Set("Access-Control-Allow-Methods", strings.Join([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, ","))
+		w.Header().Set("Access-Control-Allow-Headers", strings.Join([]string{"Accept", "Accept-Language", "Content-Language", "Origin"}, ","))
 	})
 
 	return nil
