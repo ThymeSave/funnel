@@ -14,13 +14,13 @@ import "github.com/gorilla/mux"
 
 var (
 	allowedMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-	allowedHeaders = []string{"Accept", "Accept-Language", "Content-Language", "Origin"}
+	allowedHeaders = []string{"Accept", "Accept-Language", "Content-Language", "Origin", "Authorization"}
 )
 
 func addGlobalMiddlewares(r *mux.Router) http.Handler {
 	webConfig := config.Get().Web
 	loggingHandler := handlers.LoggingHandler(os.Stdout, r)
-	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.IgnoreOptions(), handlers.AllowCredentials(), handlers.AllowedMethods(allowedMethods))(loggingHandler)
+	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.AllowedHeaders(allowedHeaders), handlers.IgnoreOptions(), handlers.AllowCredentials(), handlers.AllowedMethods(allowedMethods))(loggingHandler)
 	return corsHandler
 }
 
