@@ -14,7 +14,7 @@ import "github.com/gorilla/mux"
 func addGlobalMiddlewares(r *mux.Router) http.Handler {
 	webConfig := config.Get().Web
 	loggingHandler := handlers.LoggingHandler(os.Stdout, r)
-	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.AllowCredentials(), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}))(loggingHandler)
+	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.IgnoreOptions(), handlers.AllowCredentials(), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}))(loggingHandler)
 	return corsHandler
 }
 
@@ -35,6 +35,9 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	r.Path("/self-service/db").Methods(http.MethodPut).HandlerFunc(oauth2Middleware(SelfServiceSeedHandler))
 	r.PathPrefix(PathCORSProxy + "/").Methods(http.MethodGet).HandlerFunc(CORSProxyHandler)
 	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
+	r.Methods(http.MethodOptions).HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		// dummy handler to satisfy preflight requests
+	})
 
 	return nil
 }
