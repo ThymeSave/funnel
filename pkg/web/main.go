@@ -12,8 +12,16 @@ import (
 )
 import "github.com/gorilla/mux"
 
+var (
+	allowedMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	allowedHeaders = []string{"Accept", "Accept-Language", "Content-Language", "Origin"}
+)
+
 func addGlobalMiddlewares(r *mux.Router) http.Handler {
-	return handlers.LoggingHandler(os.Stdout, r)
+	webConfig := config.Get().Web
+	loggingHandler := handlers.LoggingHandler(os.Stdout, r)
+	corsHandler := handlers.CORS(handlers.AllowedOrigins(webConfig.CORSOrigins), handlers.IgnoreOptions(), handlers.AllowCredentials(), handlers.AllowedMethods(allowedMethods))(loggingHandler)
+	return corsHandler
 }
 
 func createHandler(r *mux.Router, handlerFunc http.HandlerFunc) http.Handler {
@@ -37,8 +45,8 @@ func registerAppRoutes(ctx context.Context, r *mux.Router) error {
 	r.PathPrefix(PathCouchDbService + "/").HandlerFunc(oauth2Middleware(CouchDbProxyHandler))
 	r.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", strings.Join(webConfig.CORSOrigins, ","))
-		w.Header().Set("Access-Control-Allow-Methods", strings.Join([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, ","))
-		w.Header().Set("Access-Control-Allow-Headers", strings.Join([]string{"Accept", "Accept-Language", "Content-Language", "Origin"}, ","))
+		w.Header().Set("Access-Control-Allow-Methods", strings.Join(allowedMethods, ","))
+		w.Header().Set("Access-Control-Allow-Headers", strings.Join(allowedHeaders, ","))
 	})
 
 	return nil
