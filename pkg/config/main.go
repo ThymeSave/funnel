@@ -86,6 +86,6 @@ func Get() *AppConfig {
 
 // CreateDefault config and ignore errors, intended to be used by tests
 func CreateDefault() {
-	err := ReadConfig(context.Background())
+	ReadConfig(context.Background())
 	Get().Oauth2.VerifyIssuer = false
 }
