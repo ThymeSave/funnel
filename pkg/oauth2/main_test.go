@@ -10,6 +10,8 @@ import (
 )
 
 func init() {
+	os.Setenv("FUNNEL_OAUTH2_ISSUER_URL", "")
+	os.Setenv("FUNNEL_OAUTH2_CLIENT_ID", "")
 	config.CreateDefault()
 }
 

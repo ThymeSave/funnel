@@ -57,6 +57,9 @@ func patchOidConfig(configPath string) error {
 }
 
 func init() {
+	os.Setenv("FUNNEL_OAUTH2_ISSUER_URL", "")
+	os.Setenv("FUNNEL_OAUTH2_CLIENT_ID", "")
+
 	// Create default version for tests
 	config.CreateDefault()
 

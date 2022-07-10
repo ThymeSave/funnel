@@ -5,6 +5,7 @@ import (
 	"github.com/thymesave/funnel/pkg/config"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 	"testing"
 )
@@ -85,5 +86,7 @@ func TestGetAggregatedStatus(t *testing.T) {
 }
 
 func init() {
+	os.Setenv("FUNNEL_OAUTH2_ISSUER_URL", "")
+	os.Setenv("FUNNEL_OAUTH2_CLIENT_ID", "")
 	config.CreateDefault()
 }
