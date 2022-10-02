@@ -1,6 +1,6 @@
 module github.com/thymesave/funnel
 
-go 1.17
+go 1.19
 
 require (
 	github.com/coreos/go-oidc/v3 v3.4.0
