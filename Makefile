@@ -22,18 +22,7 @@ build-binaries: ## Build all binaries for the project
 
 build-image: ## Build OCI image
 	pack build ghcr.io/thymesave/funnel:$(VERSION) \
-		--buildpack gcr.io/paketo-buildpacks/go \
-		--buildpack  gcr.io/paketo-buildpacks/image-labels \
 		--builder paketobuildpacks/builder:tiny \
-		--env "BP_OCI_SOURCE=https://github.com/thymesave/funnel" \
-		--env "BP_OCI_AUTHORS=https://github.com/thymesave/funnel/graphs/contributors" \
-		--env "BP_OCI_URL=https://github.com/thymesave/funnel" \
-		--env "BP_OCI_DOCUMENTATION=https://github.com/thymesave/funnel" \
-		--env "BP_OCI_VENDOR=ThymeSave" \
-		--env "BP_OCI_TITLE=Funnel" \
-		--env "BP_OCI_REF_NAME=thymesave/funnel" \
-		--env "BP_OCI_DESCRIPTION=Filters and manages all backend requests. It includes routing, cors and authentication." \
-		--env "BP_OCI_LICENSES=GPLv3" \
 		--env "BP_OCI_VERSION=$(VERSION)" \
 		--env "BP_OCI_REVISION=$(GIT_REF)" \
 		--env "BP_OCI_CREATED=$(shell date --rfc-3339=seconds)"

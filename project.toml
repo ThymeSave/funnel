@@ -1,0 +1,25 @@
+[project]
+id = "github.com/thymesave/funnel"
+name = "funnel"
+
+[build]
+
+buildpacks = [
+    { uri = "paketo-buildpacks/go" },
+    { uri = "paketo-buildpacks/image-labels" }
+]
+
+env = [
+    { name = "BP_OCI_SOURCE", value = "https://github.com/thymesave/funnel" },
+    { name = "BP_OCI_AUTHORS", value = "https://github.com/thymesave/funnel/graphs/contributors" },
+    { name = "BP_OCI_URL", value = "https://github.com/thymesave/funnel" },
+    { name = "BP_OCI_DOCUMENTATION", value = "https://github.com/thymesave/funnel" },
+    { name = "BP_OCI_VENDOR", value = "ThymeSave" },
+    { name = "BP_OCI_TITLE", value = "Funnel" },
+    { name = "BP_OCI_REF_NAME", value = "risk-refund-report" },
+    { name = "BP_OCI_DESCRIPTION", value = "Filters and manages all backend requests. It includes routing, cors and authentication." },
+    { name = "BP_OCI_LICENSES", value = "GPLv3" },
+    { name = "BP_OCI_VERSION", value = "local" },
+    { name = "BP_OCI_REVISION", value = "local" },
+    { name = "BP_OCI_CREATED", value = "unknown" }
+]

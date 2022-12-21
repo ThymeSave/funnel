@@ -87,7 +87,8 @@ jobs:
     <<: *go_executor
     steps:
       - checkout
-      - pack/install-pack
+      - pack/install-pack:
+          version: 0.28.0
       - set_version_env_var
       - setup_remote_docker
       - run:
