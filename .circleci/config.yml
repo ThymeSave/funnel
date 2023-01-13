@@ -7,7 +7,7 @@ version: '2.1'
 
 orbs:
   github-release: timo-reymann/github-release@1.1.0
-  go: circleci/go@1.7.1
+  go: circleci/go@1.7.2
   pack: buildpacks/pack@0.2.4
 
 executors:
